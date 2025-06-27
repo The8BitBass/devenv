@@ -27,6 +27,7 @@
     {
         "defaults": 
         {
+            "colorScheme": "Knight-Life",
             "elevate": true,
             "font": 
             {
@@ -58,7 +59,32 @@
             }
         ]
     },
-    "schemes": [],
+    "schemes":
+    [
+        {
+            "background": "#000000",
+            "black": "#2C2C2C",
+            "blue": "#0000FC",
+            "brightBlack": "#606060",
+            "brightBlue": "#0078FC",
+            "brightCyan": "#01E8E4",
+            "brightGreen": "#00A800",
+            "brightPurple": "#6848FC",
+            "brightRed": "#FC3800",
+            "brightWhite": "#FCF8FC",
+            "brightYellow": "#FCB800",
+            "cursorColor": "#FFFFFF",
+            "cyan": "#008894",
+            "foreground": "#FFFFFF",
+            "green": "#006800",
+            "name": "Knight-Life",
+            "purple": "#4028C4",
+            "red": "#AC1000",
+            "selectionBackground": "#FFFFFF",
+            "white": "#BCC0C4",
+            "yellow": "#AC8000"
+        }
+    ],
     "theme": "dark",
     "themes": [],
     "useAcrylicInTabRow": false

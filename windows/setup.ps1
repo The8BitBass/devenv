@@ -3,6 +3,7 @@
 [System.IO.Directory]::CreateDirectory("C:\.local\share")
 [System.IO.Directory]::CreateDirectory("C:\.local\state")
 [System.IO.Directory]::CreateDirectory("C:\Home")
+[System.IO.Directory]::CreateDirectory("C:\Home\personal")
 
 winget install microsoft.powershell
 
@@ -47,4 +48,5 @@ git clone https://github.com/8bitbass/config.nvim.git "${env:XDG_CONFIG_HOME}\nv
 winget install Microsoft.DotNet.SDK.9
 winget install Microsoft.DotNet.SDK.8
 winget install Microsoft.DotNet.SDK.7
+winget install Microsoft.DotNet.SDK.6
 

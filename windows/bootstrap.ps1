@@ -240,7 +240,7 @@ Sync-DevenvRepo `
     -TargetPath $envInfo.DevenvRoot
 
 if (-not $SkipLocalSetup) {
-    $localSetup = Join-Path $envInfo.DevenvRoot "setup-core.ps1"
+    $localSetup = Join-Path $envInfo.DevenvRoot "windows\setup-core.ps1"
 
     if (-not (Test-Path -LiteralPath $localSetup)) {
         throw "Expected local setup script not found: $localSetup"

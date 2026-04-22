@@ -140,7 +140,7 @@ $endMarker
 
 function Get-ComponentRoot {
     $devenvRoot = Get-DevenvRoot
-    return (Join-Path $devenvRoot "components")
+    return (Join-Path $devenvRoot "windows\components")
 }
 
 function Resolve-ComponentScript {

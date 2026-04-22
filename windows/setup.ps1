@@ -8,6 +8,7 @@
 winget install microsoft.powershell
 
 winget install --id Microsoft.WindowsTerminal -e
+# winget install --id wez.wezterm.nightly -e
 
 winget install --id Git.Git -e --source winget
 Write-Host "Remember to run git config --global user.name and git config --global user.email" -ForegroundColor DarkGreen -BackgroundColor White
@@ -40,9 +41,11 @@ winget install -e --id zig.zig
 
 winget install BurntSushi.ripgrep.MSVC
 
-winget install Neovim.Neovim
+winget install Neovim.Neovim -v 0.11.7
 
-git clone https://github.com/8bitbass/config.nvim.git "${env:XDG_CONFIG_HOME}\nvim"
+# get configs
+git clone https://github.com/The8BitBass/config.nvim.git "${env:XDG_CONFIG_HOME}\nvim"
+git clone https://github.com/The8BitBass/config.wez.git "${env:XDG_CONFIG_HOME}\wezterm"
 
 # install DotNet versions
 winget install Microsoft.DotNet.SDK.9

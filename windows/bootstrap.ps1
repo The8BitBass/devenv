@@ -248,7 +248,9 @@ if (-not $SkipLocalSetup) {
 
     Write-Step "Running local setup orchestrator"
     & $pwsh -NoProfile -ExecutionPolicy Bypass -File $localSetup
-    exit $LASTEXITCODE
+    if ($LASTEXITCODE -ne 0) {
+        throw "Local setup failed with exit code $LASTEXITCODE"
+    }
 }
 
 Write-Step "Bootstrap complete"

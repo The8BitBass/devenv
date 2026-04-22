@@ -126,8 +126,7 @@ $endMarker
 
     if ($existing -match $pattern) {
         $updated = [regex]::Replace($existing, $pattern, $managedBlock + [Environment]::NewLine, 1)
-    }
-    else {
+    } else {
         if ($existing -and -not $existing.EndsWith([Environment]::NewLine)) {
             $existing += [Environment]::NewLine
         }
@@ -162,22 +161,24 @@ function Invoke-DevenvComponent {
     $scriptPath = Resolve-ComponentScript -Name $Name
 
     Write-Step "Running component: $Name"
-    & $scriptPath
 
-    if ($LASTEXITCODE -ne 0) {
-        throw "Component failed: $Name"
+    try {
+        & $scriptPath
+    } catch {
+        throw "Component failed: $Name. $($_.Exception.Message)"
     }
 }
 
-Export-ModuleMember -Function `
-    Write-Step, `
-    Set-Directory, `
-    Set-File, `
-    Get-DevenvRoot, `
-    Get-DocumentsPath, `
-    Get-PwshPath, `
-    Get-PwshProfilePath, `
-    Set-ManagedBlockInFile, `
-    Get-ComponentRoot, `
-    Resolve-ComponentScript, `
-    Invoke-DevenvComponent
+Export-ModuleMember -Function @(
+    'Write-Step',
+    'Set-Directory',
+    'Set-File',
+    'Get-DevenvRoot',
+    'Get-DocumentsPath',
+    'Get-PwshPath',
+    'Get-PwshProfilePath',
+    'Set-ManagedBlockInFile',
+    'Get-ComponentRoot',
+    'Resolve-ComponentScript',
+    'Invoke-DevenvComponent'
+)

@@ -1,7 +1,29 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-Import-Module (Join-Path $PSScriptRoot "devenv.psm1") -Force
+# copied from devenv.psm1. Each module should be standalone.
+function Get-EnvironmentVariableValue {
+    param(
+        [Parameter(Mandatory)][string]$Name
+    )
+
+    $value = [Environment]::GetEnvironmentVariable($Name, "Process")
+    if ($value) {
+        return $value
+    }
+
+    $value = [Environment]::GetEnvironmentVariable($Name, "User")
+    if ($value) {
+        return $value
+    }
+
+    $value = [Environment]::GetEnvironmentVariable($Name, "Machine")
+    if ($value) {
+        return $value
+    }
+
+    return $null
+}
 
 function Get-XdgStateHome {
     $path = Get-EnvironmentVariableValue -Name "XDG_STATE_HOME"
@@ -45,9 +67,9 @@ function Get-OrderedComponentList {
 
 function Get-DefaultRunComponentList {
     return @(
-        "powershell"
-        # "git",
-        # "terminal",
+        "powershell",
+        "git",
+        "terminal"
         # "base",
         # "neovim",
         # "powershell-profile"
@@ -196,13 +218,16 @@ function Get-DesiredStateObject {
     }
 }
 
-Export-ModuleMember -Function `
-    Get-XdgStateHome, `
-    Get-DevenvStateRoot, `
-    Get-DesiredStatePath, `
-    Resolve-ComponentSet, `
-    Get-DesiredState, `
-    Set-DesiredState, `
-    Add-DesiredComponents, `
-    Test-DesiredComponent, `
-    Get-DesiredStateObject
+Export-ModuleMember -Function @(
+    'Get-XdgStateHome',
+    'Get-DevenvStateRoot',
+    'Get-DesiredStatePath',
+    'Get-OrderedComponentList',
+    'Get-DefaultRunComponentList',
+    'Resolve-ComponentSet',
+    'Get-DesiredState',
+    'Set-DesiredState',
+    'Add-DesiredComponents',
+    'Test-DesiredComponent',
+    'Get-DesiredStateObject'
+)

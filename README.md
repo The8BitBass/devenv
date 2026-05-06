@@ -3,7 +3,7 @@
 Quick hacky scripts to setup my dev environment
 
 ## Windows
-Powershell, Run as admin
-```
-Invoke-WebRequest https://raw.githubusercontent.com/8bitbass/devenv/refs/heads/main/windows/bootstrap.ps1 | Invoke-Expression
+Run as admin
+```powershell
+& ([scriptblock]::Create((Invoke-RestMethod "https://raw.githubusercontent.com/the8bitbass/devenv/refs/heads/main/windows/bootstrap.ps1")))
 ```

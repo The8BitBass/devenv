@@ -49,30 +49,38 @@ function Get-DesiredStatePath {
 
 function Get-OrderedComponentList {
     return @(
+        "env",
+        "sudo",
         "powershell",
         "git",
         "terminal",
         "base",
-        "wezterm",
+        "bin",
         "neovim",
+        "fonts",
+        "wezterm",
         "dotfiles",
         "zoxide",
         "fzf",
         "dotnet",
         "powershell-profile",
         "wsl",
-        "arch-wsl"
+        "wsl-arch"
     )
 }
 
 function Get-DefaultRunComponentList {
     return @(
+        "env",
+        "sudo",
         "powershell",
         "git",
-        "terminal"
-        # "base",
-        # "neovim",
-        # "powershell-profile"
+        "terminal",
+        "base",
+        "bin",
+        "neovim",
+        "dotfiles",
+        "powershell-profile"
     )
 }
 

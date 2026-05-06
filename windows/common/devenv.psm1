@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 
 function Write-Step {
     param([Parameter(Mandatory)][string]$Message)
-    Write-Host "`n==> $Message" -ForegroundColor Cyan
+    Write-Host "`n==> $Message" -ForegroundColor Magenta
 }
 
 function Set-Directory {
@@ -98,6 +98,29 @@ function Get-PwshProfilePath {
     return ($path | Select-Object -First 1).ToString().Trim()
 }
 
+function Set-EnvVar {
+    param (
+        [Parameter(Mandatory = $true)][string]$Name,
+        [Parameter(Mandatory = $true)][string]$Value
+    )
+
+    $current = [Environment]::GetEnvironmentVariable($Name, "Machine")
+    if ($current -ne $Value) {
+        $displayCurrent = if ($null -eq $current) {
+            "<not set>" 
+        } else {
+            $current 
+        }
+
+        Write-Host "Updating environment variable '$Name'"
+        Write-Host "  Original: '$displayCurrent'"
+        Write-Host "  Updated : '$Value'"
+
+        [System.Environment]::SetEnvironmentVariable($Name, $Value, "Machine")
+    }
+    Set-Item env:$Name -Value $Value  # Also update current session
+}
+
 function Set-ManagedBlockInFile {
     param(
         [Parameter(Mandatory)][string]$Path,
@@ -173,10 +196,12 @@ Export-ModuleMember -Function @(
     'Write-Step',
     'Set-Directory',
     'Set-File',
+    'Get-EnvironmentVariableValue',
     'Get-DevenvRoot',
     'Get-DocumentsPath',
     'Get-PwshPath',
     'Get-PwshProfilePath',
+    'Set-EnvVar',
     'Set-ManagedBlockInFile',
     'Get-ComponentRoot',
     'Resolve-ComponentScript',

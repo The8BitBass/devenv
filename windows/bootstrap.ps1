@@ -1,3 +1,4 @@
+#Requires -RunAsAdministrator
 [CmdletBinding()]
 param(
     [string]$DevenvRepoUrl = "https://github.com/The8BitBass/devenv.git",
@@ -125,13 +126,15 @@ function Initialize-DevenvBaseEnvironment {
     $driveRoot = [System.IO.Path]::GetPathRoot($paths.UserProfile)
     $devenvRoot = Join-Path $driveRoot "devenv"
     $configHome = Join-Path $driveRoot ".config"
-    $dataHome = Join-Path $driveRoot ".local\share"
-    $stateHome = Join-Path $driveRoot ".local\state"
+    $localHome = Join-Path $driveRoot ".local"
+    $dataHome = Join-Path $localHome "share"
+    $stateHome = Join-Path $localHome "state"
     $homeDir = Join-Path $driveRoot "Home"
     $homePersonal = Join-Path $homeDir "personal"
 
     $directoriesToCreate = @(
         $configHome,
+        $localHome,
         $dataHome,
         $stateHome,
         $homeDir,

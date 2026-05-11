@@ -27,11 +27,9 @@ $desiredStatePath = Get-DesiredStatePath
 $desiredStateExists = Test-Path -LiteralPath $desiredStatePath
 
 $requestedComponents = @()
-[array]$compArray = $Components
-
-if ($compArray -and $compArray.Count -gt 0) {
+if ($Components -and $Components.Count -gt 0) {
     [array]$requestedComponents = Resolve-ComponentSet `
-        -CandidateComponents $compArray `
+        -CandidateComponents $Components `
         -Source "command line"
 }
 

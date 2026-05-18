@@ -27,9 +27,26 @@ $desiredStatePath = Get-DesiredStatePath
 $desiredStateExists = Test-Path -LiteralPath $desiredStatePath
 
 $requestedComponents = @()
+
 if ($Components -and $Components.Count -gt 0) {
+    $candidateComponents = @()
+
+    if ($Components -contains "lite") {
+        $candidateComponents += Get-LiteRunComponentList
+    }
+
+    if ($Components -contains "sapps") {
+        $candidateComponents += Get-SappsComponentList
+    }
+
+    $candidateComponents += @(
+        $Components | Where-Object {
+            $_ -ne "lite" -and $_ -ne "sapps"
+        }
+    )
+
     [array]$requestedComponents = Resolve-ComponentSet `
-        -CandidateComponents $Components `
+        -CandidateComponents $candidateComponents `
         -Source "command line"
 }
 

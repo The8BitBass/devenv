@@ -62,6 +62,16 @@ switch ($Command.ToLowerInvariant()) {
         break
     }
 
+    "lista" {
+        $listScript = Join-Path $windowsRoot "list-components.ps1"
+        if (-not (Test-Path -LiteralPath $listScript)) {
+            throw "list-components.ps1 not found: $listScript"
+        }
+
+        & $listScript -Order "alpha"
+        break
+    }
+
     "list" {
         $listScript = Join-Path $windowsRoot "list-components.ps1"
         if (-not (Test-Path -LiteralPath $listScript)) {

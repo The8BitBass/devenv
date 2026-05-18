@@ -7,15 +7,12 @@ $ErrorActionPreference = "Stop"
 Import-Module (Join-Path $PSScriptRoot "..\common\devenv.psm1") -Force
 Import-Module (Join-Path $PSScriptRoot "..\common\devenv.winget.psm1") -Force
 
-$packageIds = @(
-    "BurntSushi.ripgrep.MSVC"
-)
+$packageId = "GIMP.GIMP.3"
 
-Write-Step "Ensuring Base components"
+Write-Step "Ensuring GIMP"
 
-foreach ($packageId in $packageIds) {
-    Set-WingetPackage -Id $packageId
-}
+Set-WingetPackage -Id $packageId
 
-Write-Step "Base components complete"
+Write-Step "GIMP complete"
+
 

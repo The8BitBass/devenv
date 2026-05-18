@@ -1,5 +1,7 @@
 [CmdletBinding()]
-param()
+param(
+    [string]$Order = "run"
+)
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
@@ -16,6 +18,8 @@ if (-not (Test-Path -LiteralPath $componentRoot)) {
 
 $orderedComponents = Get-OrderedComponentList
 $defaultComponents = Get-DefaultRunComponentList
+$liteComponents = Get-LiteRunComponentList
+$sappsComponents = Get-SappsComponentList
 $desiredStatePath = Get-DesiredStatePath
 
 $desiredComponents = @()
@@ -36,18 +40,92 @@ else {
     Write-Step "Desired state file not found"
 }
 
-$rows = foreach ($component in $orderedComponents) {
+[array]$rows = foreach ($component in $orderedComponents) {
     $componentScript = Join-Path $componentRoot "$component.ps1"
 
     [pscustomobject]@{
         Component = $component
         Script    = Test-Path -LiteralPath $componentScript
-        Default   = ($component -in $defaultComponents)
         Desired   = ($component -in $desiredComponents)
+        Default   = ($component -in $defaultComponents)
+        Lite      = ($component -in $liteComponents)
+        SApp      = ($component -in $sappsComponents)
     }
 }
 
-$rows | Format-Table -AutoSize
+if ($Order -eq "alpha") {
+    $rows = @($rows | Sort-Object -Property Component)
+}
+else {
+    $Order = "run"
+}
+
+Write-Step "Display order: $Order"
+
+$columns = @(
+    "Component",
+    "Script",
+    "Desired",
+    "Default",
+    "Lite",
+    "SApp"
+)
+
+$widths = @{}
+
+foreach ($column in $columns) {
+    $widths[$column] = $column.Length
+}
+
+foreach ($row in $rows) {
+    foreach ($column in $columns) {
+        $value = $row.PSObject.Properties[$column].Value
+        $valueLength = ([string]$value).Length
+
+        if ($valueLength -gt $widths[$column]) {
+            $widths[$column] = $valueLength
+        }
+    }
+}
+
+$formatParts = for ($i = 0; $i -lt $columns.Count; $i++) {
+    $column = $columns[$i]
+    "{" + $i + ",-" + $widths[$column] + "}"
+}
+
+$format = $formatParts -join "  "
+
+Write-Host ""
+
+[object[]]$headerValues = $columns
+Write-Host ([string]::Format($format, $headerValues)) -ForegroundColor Cyan
+
+[object[]]$separatorValues = foreach ($column in $columns) {
+    "-" * $widths[$column]
+}
+
+Write-Host ([string]::Format($format, $separatorValues)) -ForegroundColor DarkCyan
+
+$rowColors = @(
+    [ConsoleColor]::Red,
+    [ConsoleColor]::Yellow,
+    [ConsoleColor]::Green,
+    [ConsoleColor]::Blue
+)
+
+$rowIndex = 0
+
+foreach ($row in $rows) {
+    [object[]]$rowValues = foreach ($column in $columns) {
+        [string]$row.PSObject.Properties[$column].Value
+    }
+
+    $rowColor = $rowColors[$rowIndex % $rowColors.Count]
+
+    Write-Host ([string]::Format($format, $rowValues)) -ForegroundColor $rowColor
+
+    $rowIndex++
+}
 
 if (-not $desiredStateExists) {
     Write-Host ""

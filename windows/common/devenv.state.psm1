@@ -64,6 +64,7 @@ function Get-OrderedComponentList {
         "fzf",
         "dotnet",
         "powershell-profile",
+        "gimp",
         "wsl",
         "wsl-arch"
     )
@@ -76,11 +77,22 @@ function Get-DefaultRunComponentList {
         "powershell",
         "git",
         "terminal",
-        "base",
         "bin",
+        "powershell-profile"
+    )
+}
+
+function Get-LiteRunComponentList {
+    return @(
         "neovim",
         "dotfiles",
-        "powershell-profile"
+        "base"
+    )
+}
+
+function Get-SappsComponentList {
+    return @(
+        "gimp"
     )
 }
 
@@ -232,6 +244,8 @@ Export-ModuleMember -Function @(
     'Get-DesiredStatePath',
     'Get-OrderedComponentList',
     'Get-DefaultRunComponentList',
+    'Get-LiteRunComponentList',
+    'Get-SappsComponentList',
     'Resolve-ComponentSet',
     'Get-DesiredState',
     'Set-DesiredState',

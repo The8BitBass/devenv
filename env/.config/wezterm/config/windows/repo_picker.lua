@@ -20,6 +20,7 @@ local windows_roots = {
 
 if windows_home ~= "" then
     table.insert(windows_roots, windows_home .. [[\dev\personal]])
+    table.insert(windows_roots, windows_home .. [[\personal]])
 end
 
 -- These are evaluated inside each WSL distro using bash, so $HOME is the WSL
@@ -196,7 +197,7 @@ local function workspace_name_for_repo(repo)
         prefix = "win"
     end
 
-    local base = prefix .. "-" .. repo_name
+    local base = repo_name .. "-" .. prefix
 
     if include_hash_in_workspace_name then
         return base .. "-" .. stable_hash(repo_identity(repo)):sub(1, 6)

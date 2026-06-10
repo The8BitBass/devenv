@@ -2,3 +2,6 @@
 - Add git url re-write
 - WSL bootstrap script
 - WSL scripts
+- WezTerm backgrounds
+- backgrounds git repo
+ 

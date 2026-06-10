@@ -1,5 +1,6 @@
 local wezterm = require("wezterm") ---@type Wezterm
 local repo_picker = require("config.windows.repo_picker")
+local wsl_workspaces = require("config.windows.wsl_workspaces")
 
 local function add_keys(config, keys)
     config.keys = config.keys or {}
@@ -30,6 +31,9 @@ function module.apply_to_config(config)
     -- config.win32_system_backdrop = "Mica"
     config.default_prog = { "pwsh.exe" }
     config.default_cwd = "C:/"
+
+    config.wsl_domains = wsl_workspaces.get_wsl_domains()
+    wezterm.on("gui-startup", function() wsl_workspaces.create_workspaces_for_all_wsl_distros() end)
 
     local keys = {
         {

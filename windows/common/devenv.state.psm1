@@ -60,11 +60,12 @@ function Get-OrderedComponentList {
         "fonts",
         "wezterm",
         "dotfiles",
-        "zoxide",
         "fzf",
         "dotnet",
         "powershell-profile",
         "gimp",
+        "monogame",
+        "zoxide",
         "wsl",
         "wsl-arch"
     )
@@ -85,6 +86,8 @@ function Get-DefaultRunComponentList {
 function Get-LiteRunComponentList {
     return @(
         "neovim",
+        "fonts",
+        "wezterm",
         "dotfiles",
         "base"
     )

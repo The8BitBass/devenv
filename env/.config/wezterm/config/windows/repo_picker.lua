@@ -19,15 +19,14 @@ local windows_roots = {
 }
 
 if windows_home ~= "" then
-    table.insert(windows_roots, windows_home .. [[\dev\personal]])
     table.insert(windows_roots, windows_home .. [[\personal]])
 end
 
 -- These are evaluated inside each WSL distro using bash, so $HOME is the WSL
 -- user's HOME, not the Windows HOME.
 local wsl_roots = {
-    "$HOME/dev/personal",
-    "$HOME/dev/work",
+    "$HOME/personal/dev",
+    "$HOME/work/dev",
 }
 
 local state_dir = os.getenv("XDG_STATE_HOME")

@@ -64,6 +64,7 @@ function Get-OrderedComponentList {
         "dotnet",
         "powershell-profile",
         "gimp",
+        "inkscape",
         "monogame",
         "zoxide",
         "wsl",
@@ -95,7 +96,8 @@ function Get-LiteRunComponentList {
 
 function Get-SappsComponentList {
     return @(
-        "gimp"
+        "gimp",
+        "inkscape"
     )
 }
 

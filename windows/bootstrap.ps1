@@ -215,6 +215,49 @@ function Sync-DevenvRepo {
     }
 }
 
+function Set-GitHubSshInsteadOf {
+    param(
+        [string]$RepoPath
+    )
+
+    $git = Get-GitPath
+    if (-not $git) {
+        throw "git.exe was not found."
+    }
+
+    & $git config --global "url.git@github.com:.insteadOf" "https://github.com/"
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to configure GitHub SSH URL rewrite."
+    }
+
+    if ($RepoPath -and (Test-Path -LiteralPath (Join-Path $RepoPath ".git"))) {
+        & $git -C $RepoPath config "url.git@github.com:.insteadOf" "https://github.com/"
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to configure repo GitHub SSH URL rewrite."
+        }
+
+        if (Test-Path -LiteralPath (Join-Path $RepoPath ".gitmodules")) {
+            & $git -C $RepoPath submodule sync --recursive
+            if ($LASTEXITCODE -ne 0) {
+                throw "Failed to sync submodule git config."
+            }
+
+            & $git -C $RepoPath submodule foreach --recursive "git config url.git@github.com:.insteadOf https://github.com/"
+            if ($LASTEXITCODE -ne 0) {
+                throw "Failed to configure submodule GitHub SSH URL rewrite."
+            }
+        }
+    }
+}
+
+function Write-SshSetupReminder {
+    Write-Host ""
+    Write-Host "SSH checkpoint: the repo is cloned, and GitHub HTTPS URLs now bend toward git@github.com:." -ForegroundColor Yellow
+    Write-Host "Before future pulls start asking awkward questions, plant your SSH key and test it with:" -ForegroundColor Yellow
+    Write-Host "  ssh -T git@github.com" -ForegroundColor Green
+    Write-Host ""
+}
+
 Write-Step "Ensuring Git"
 if (-not (Get-GitPath)) {
     Confirm-WingetPackage -Id "Git.Git"
@@ -241,6 +284,10 @@ Sync-DevenvRepo `
     -RepoUrl $DevenvRepoUrl `
     -Branch $Branch `
     -TargetPath $envInfo.DevenvRoot
+
+Write-Step "Configuring GitHub SSH URL rewrite"
+Set-GitHubSshInsteadOf -RepoPath $envInfo.DevenvRoot
+Write-SshSetupReminder
 
 if (-not $SkipLocalSetup) {
     $localSetup = Join-Path $envInfo.DevenvRoot "windows\setup-core.ps1"

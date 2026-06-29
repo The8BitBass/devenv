@@ -89,6 +89,35 @@ clone_devenv_repo() {
     fi
 }
 
+configure_github_ssh_instead_of() {
+    require_root
+    user_exists || die "Cannot configure git before user exists: $DEVENV_USER"
+
+    log "Configuring GitHub SSH URL rewrite"
+    run_as_devenv_user git config --global url.git@github.com:.insteadOf https://github.com/
+
+    if [[ -d "$DEVENV_CLONE_DIR/.git" ]]; then
+        run_as_devenv_user git -C "$DEVENV_CLONE_DIR" config url.git@github.com:.insteadOf https://github.com/
+
+        if [[ -f "$DEVENV_CLONE_DIR/.gitmodules" ]]; then
+            run_as_devenv_user git -C "$DEVENV_CLONE_DIR" submodule sync --recursive
+            run_as_devenv_user git -C "$DEVENV_CLONE_DIR" submodule foreach --recursive \
+                'git config url.git@github.com:.insteadOf https://github.com/'
+        fi
+    fi
+}
+
+print_ssh_setup_reminder() {
+    cat <<'EOF_SSH'
+
+SSH checkpoint: the repo is cloned, and GitHub HTTPS URLs now bend toward git@github.com:.
+Before future pulls start asking awkward questions, plant your SSH key and test it with:
+
+    ssh -T git@github.com
+
+EOF_SSH
+}
+
 install_devenv_command() {
     require_root
 
@@ -146,6 +175,8 @@ main() {
 
     write_wsl_conf
     clone_devenv_repo
+    configure_github_ssh_instead_of
+    print_ssh_setup_reminder
     install_devenv_command
     print_next_steps
 }

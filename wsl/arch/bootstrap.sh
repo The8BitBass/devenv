@@ -85,7 +85,7 @@ clone_devenv_repo() {
         log "Cloning Linux devenv repo"
         log "Repo: $DEVENV_REPO_URL"
         log "Path: $DEVENV_CLONE_DIR"
-        run_as_devenv_user git clone "$DEVENV_REPO_URL" "$DEVENV_CLONE_DIR"
+        run_as_devenv_user git clone --recurse-submodules "$DEVENV_REPO_URL" "$DEVENV_CLONE_DIR"
     fi
 }
 

@@ -71,3 +71,33 @@ ensure_file_contains() {
         printf '%s\n' "$line" >> "$file"
     fi
 }
+
+seed_github_known_hosts() {
+    require_root
+    user_exists || die "Cannot seed known_hosts before user exists: $DEVENV_USER"
+
+    local home_dir ssh_dir known_hosts group keyscan_file
+    home_dir="$(devenv_user_home)"
+    ssh_dir="$home_dir/.ssh"
+    known_hosts="$ssh_dir/known_hosts"
+    group="$(devenv_user_group)"
+    keyscan_file="$(mktemp)"
+
+    ensure_dir_for_user "$ssh_dir"
+    chmod 700 "$ssh_dir"
+
+    ssh-keyscan github.com > "$keyscan_file" 2>/dev/null
+    if ! ssh-keygen -lf "$keyscan_file" | grep -Fq 'SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU github.com (ED25519)'; then
+        rm -f "$keyscan_file"
+        die "GitHub ED25519 host key fingerprint did not match the expected value."
+    fi
+
+    touch "$known_hosts"
+    if ! ssh-keygen -F github.com -f "$known_hosts" >/dev/null 2>&1; then
+        cat "$keyscan_file" >> "$known_hosts"
+    fi
+
+    rm -f "$keyscan_file"
+    chown -R "$DEVENV_USER:$group" "$ssh_dir"
+    chmod 600 "$known_hosts"
+}

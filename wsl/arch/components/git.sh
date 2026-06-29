@@ -17,5 +17,6 @@ user_exists || die "Cannot configure git before user exists: $DEVENV_USER"
 # Keep this intentionally minimal. Personal identity belongs in your dotfiles or
 # a later git component, not in the bootstrap.
 run_as_devenv_user git config --global pull.ff only
+seed_github_known_hosts
 
 log "Git setup complete"

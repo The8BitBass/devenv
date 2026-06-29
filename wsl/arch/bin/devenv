@@ -33,7 +33,7 @@ Usage:
   devenv install <component>   Run wsl/arch/components/<component>.sh
   devenv update                Pull the Linux devenv repo and update submodules
   devenv list                  List available Linux component scripts
-  devenv dotfiles              Copy env/.config into XDG_CONFIG_HOME
+  devenv dotfiles              Replace managed env/.config entries in XDG_CONFIG_HOME
   devenv doctor                Print basic devenv/WSL diagnostics
   devenv help                  Show this help
 EOF_USAGE
@@ -78,6 +78,12 @@ command_dotfiles() {
     esac
 
     mkdir -p "$DOTFILES_TARGET"
+    log "Removing existing managed dotfiles"
+    for source_item in "$DOTFILES_SOURCE"/* "$DOTFILES_SOURCE"/.[!.]* "$DOTFILES_SOURCE"/..?*; do
+        [[ -e "$source_item" ]] || continue
+        rm -rf -- "$DOTFILES_TARGET/$(basename "$source_item")"
+    done
+
     log "Copying dotfiles"
     log "Source: $DOTFILES_SOURCE"
     log "Target: $DOTFILES_TARGET"

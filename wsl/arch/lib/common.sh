@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 # Shared helpers for WSL Arch bootstrap/component scripts.
 
-: "${DEVENV_USER:=jay}"
+: "${DEVENV_USER:=the8bitbass}"
 : "${DEVENV_CLONE_DIR:=/home/${DEVENV_USER}/dev/devenv}"
 : "${DEVENV_SHELL:=/bin/bash}"
 

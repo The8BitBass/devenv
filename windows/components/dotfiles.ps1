@@ -31,12 +31,18 @@ Write-Host "[dotfiles] Target: $targetConfig"
 
 New-Item -ItemType Directory -Path $targetConfig -Force | Out-Null
 
-Write-Host "[dotfiles] Removing existing config files..."
-Get-ChildItem -LiteralPath $targetConfig -Force |
-    Remove-Item -Recurse -Force
+Write-Host "[dotfiles] Removing existing managed config files..."
+$sourceItems = @(Get-ChildItem -LiteralPath $sourceConfig -Force)
+foreach ($sourceItem in $sourceItems) {
+    $targetItem = Join-Path $targetConfig $sourceItem.Name
+
+    if (Test-Path -LiteralPath $targetItem) {
+        Remove-Item -LiteralPath $targetItem -Recurse -Force
+    }
+}
 
 Write-Host "[dotfiles] Copying config files..."
-Get-ChildItem -LiteralPath $sourceConfig -Force |
+$sourceItems |
     Copy-Item -Destination $targetConfig -Recurse -Force
 
 Write-Host "[dotfiles] Complete."

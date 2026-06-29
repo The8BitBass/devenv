@@ -106,9 +106,9 @@ function Set-EnvVar {
     $current = [Environment]::GetEnvironmentVariable($Name, "Machine")
     if ($current -ne $Value) {
         $displayCurrent = if ($null -eq $current) {
-            "<not set>" 
+            "<not set>"
         } else {
-            $current 
+            $current
         }
 
         Write-Host "Updating environment variable '$Name'"
@@ -225,9 +225,17 @@ function Set-GitHubSshInsteadOf {
         throw "git.exe was not found."
     }
 
-    & $git config --global "url.git@github.com:.insteadOf" "https://github.com/"
+    $globalRewrite = @(& $git config --global --get-all "url.git@github.com:.insteadOf" 2>$null)
     if ($LASTEXITCODE -ne 0) {
-        throw "Failed to configure GitHub SSH URL rewrite."
+        $global:LASTEXITCODE = 0
+        $globalRewrite = @()
+    }
+
+    if ($globalRewrite -contains "https://github.com/") {
+        & $git config --global --unset-all "url.git@github.com:.insteadOf" "https://github.com/"
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to remove global GitHub SSH URL rewrite."
+        }
     }
 
     if ($RepoPath -and (Test-Path -LiteralPath (Join-Path $RepoPath ".git"))) {
@@ -252,8 +260,8 @@ function Set-GitHubSshInsteadOf {
 
 function Write-SshSetupReminder {
     Write-Host ""
-    Write-Host "SSH checkpoint: the repo is cloned, and GitHub HTTPS URLs now bend toward git@github.com:." -ForegroundColor Yellow
-    Write-Host "Before future pulls start asking awkward questions, plant your SSH key and test it with:" -ForegroundColor Yellow
+    Write-Host "SSH checkpoint: this repo and its submodules now rewrite GitHub HTTPS URLs to git@github.com:." -ForegroundColor Yellow
+    Write-Host "Before future devenv pulls start asking awkward questions, plant your SSH key and test it with:" -ForegroundColor Yellow
     Write-Host "  ssh -T git@github.com" -ForegroundColor Green
     Write-Host ""
 }

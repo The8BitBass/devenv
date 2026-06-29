@@ -1,3 +1,21 @@
 * text=auto
 .gitmodules text eol=lf
 
+# Linux / WSL scripts must be LF
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+/wsl/** text eol=lf
+/linux/** text eol=lf
+
+# PowerShell scripts can stay Windows-style
+*.ps1 text eol=crlf
+*.psm1 text eol=crlf
+*.psd1 text eol=crlf
+
+# Common config files that are safer as LF
+*.lua text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf

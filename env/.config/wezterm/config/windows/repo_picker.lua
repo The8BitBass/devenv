@@ -490,7 +490,7 @@ set -e
         "wsl.exe",
         "--distribution",
         domain.distribution,
-        "--",
+        "--exec",
         "bash",
         "-lc",
         script,
@@ -567,11 +567,46 @@ local function get_cached_or_refresh()
     local repos = load_cache()
 
     if repos and #repos > 0 then
-        return repos, true
+        local has_wsl_repo = false
+
+        for _, repo in ipairs(repos) do
+            if repo.kind == "wsl" then
+                has_wsl_repo = true
+                break
+            end
+        end
+
+        if has_wsl_repo or #get_wsl_domains() == 0 then
+            return repos, true
+        end
+
+        wezterm.log_info("Refreshing repo cache because WSL domains exist but cached WSL repos do not")
+        return refresh_cache_data(), false
+    end
+
+    if repos then
+        wezterm.log_info("Refreshing empty repo cache")
     end
 
     local refreshed = refresh_cache_data()
     return refreshed, false
+end
+
+local function count_repos_by_kind(repos)
+    local counts = {
+        windows = 0,
+        wsl = 0,
+    }
+
+    for _, repo in ipairs(repos or {}) do
+        if repo.kind == "wsl" then
+            counts.wsl = counts.wsl + 1
+        elseif repo.kind == "windows" then
+            counts.windows = counts.windows + 1
+        end
+    end
+
+    return counts
 end
 
 -- ---------------------------------------------------------------------------
@@ -679,7 +714,17 @@ function M.refresh_cache()
             return
         end
 
-        toast(window, "Repo cache refreshed: " .. tostring(#repos) .. " repos")
+        local counts = count_repos_by_kind(repos)
+        toast(
+            window,
+            "Repo cache refreshed: "
+                .. tostring(#repos)
+                .. " repos (Windows: "
+                .. tostring(counts.windows)
+                .. ", WSL: "
+                .. tostring(counts.wsl)
+                .. ")"
+        )
     end)
 end
 

@@ -10,4 +10,4 @@ if [ -f /etc/profile.d/devenv-xdg.sh ]; then
     . /etc/profile.d/devenv-xdg.sh
 fi
 
-PROMPT='%F{blue}%/%f %# '
+PROMPT='%# %F{13}%n %/%f $ '

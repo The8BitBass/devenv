@@ -26,6 +26,7 @@ end
 -- user's HOME, not the Windows HOME.
 local wsl_roots = {
     "$HOME/personal/dev",
+    "$HOME/dev",
     "$HOME/work/dev",
 }
 

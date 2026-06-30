@@ -12,7 +12,30 @@ fi
 ARCH_DIR="$DEVENV_ROOT/wsl/arch"
 COMPONENT_DIR="$ARCH_DIR/components"
 DOTFILES_SOURCE="$DEVENV_ROOT/env/.config"
-DOTFILES_TARGET="${XDG_CONFIG_HOME:-$HOME/.config}"
+
+ORDERED_TARGETS=(
+    pacman
+    user
+    sudo
+    xdg
+    git
+    base
+    bin
+    zsh
+    neovim
+    dotfiles
+    dotnet
+    opencode
+    workspaces
+)
+
+LITE_TARGETS=(
+    base
+    bin
+    zsh
+    neovim
+    dotfiles
+)
 
 log() {
     printf '\033[1;34m[devenv]\033[0m %s\n' "$*"
@@ -27,15 +50,44 @@ die() {
     exit 1
 }
 
+dotfiles_user() {
+    if [[ "${EUID}" -eq 0 && -n "${SUDO_USER:-}" && "${SUDO_USER}" != root ]]; then
+        printf '%s\n' "$SUDO_USER"
+        return
+    fi
+
+    printf '%s\n' "${USER:-$(id -un)}"
+}
+
+dotfiles_target() {
+    local target_user home_dir
+
+    if [[ -n "${XDG_CONFIG_HOME:-}" && "${EUID}" -ne 0 ]]; then
+        printf '%s\n' "$XDG_CONFIG_HOME"
+        return
+    fi
+
+    target_user="$(dotfiles_user)"
+    home_dir="$(getent passwd "$target_user" | cut -d: -f6)"
+    [[ -n "$home_dir" ]] || die "Could not resolve home directory for user: $target_user"
+
+    printf '%s\n' "$home_dir/.config"
+}
+
+DOTFILES_TARGET="$(dotfiles_target)"
+
 usage() {
     cat <<EOF_USAGE
 Usage:
-  devenv install <component>   Run wsl/arch/components/<component>.sh
+  devenv install <target...>   Run component scripts or presets in WSL order
   devenv update                Pull the Linux devenv repo and update submodules
   devenv list                  List available Linux component scripts
   devenv dotfiles              Replace managed env/.config entries in XDG_CONFIG_HOME
   devenv doctor                Print basic devenv/WSL diagnostics
   devenv help                  Show this help
+
+presets:
+  lite                          base bin zsh neovim dotfiles
 EOF_USAGE
 }
 
@@ -43,16 +95,79 @@ ensure_repo() {
     [[ -d "$DEVENV_ROOT/.git" ]] || die "DEVENV_ROOT is not a git repo: $DEVENV_ROOT"
 }
 
-command_install() {
-    local component="${1:-}"
-    [[ -n "$component" ]] || die "Missing component name. Try: devenv list"
+is_ordered_target() {
+    local target="$1"
+    local ordered_target
 
-    local script="$COMPONENT_DIR/${component}.sh"
-    [[ -f "$script" ]] || die "Unknown component: $component. Try: devenv list"
+    for ordered_target in "${ORDERED_TARGETS[@]}"; do
+        [[ "$target" == "$ordered_target" ]] && return 0
+    done
 
-    log "Running component: $component"
+    return 1
+}
+
+add_install_target() {
+    local target="$1"
+    local -n requested_ref="$2"
+
+    if ! is_ordered_target "$target"; then
+        die "Unknown install target: $target. Try: devenv list"
+    fi
+
+    if [[ "$target" != dotfiles && ! -f "$COMPONENT_DIR/${target}.sh" ]]; then
+        die "Install target has no component script: $target"
+    fi
+
+    requested_ref["$target"]=1
+}
+
+add_install_arg() {
+    local arg="$1"
+    local preset_target
+
+    case "$arg" in
+        lite)
+            for preset_target in "${LITE_TARGETS[@]}"; do
+                add_install_target "$preset_target" "$2"
+            done
+            ;;
+        *)
+            add_install_target "$arg" "$2"
+            ;;
+    esac
+}
+
+run_install_target() {
+    local target="$1"
+
+    if [[ "$target" == dotfiles ]]; then
+        command_dotfiles
+        return
+    fi
+
+    local script="$COMPONENT_DIR/${target}.sh"
+    [[ -f "$script" ]] || die "Unknown component: $target. Try: devenv list"
+
+    log "Running component: $target"
     export DEVENV_ROOT
     bash "$script"
+}
+
+command_install() {
+    [[ "$#" -gt 0 ]] || die "Missing install target. Try: devenv list"
+
+    local -A requested=()
+    local arg ordered_target
+
+    for arg in "$@"; do
+        add_install_arg "$arg" requested
+    done
+
+    for ordered_target in "${ORDERED_TARGETS[@]}"; do
+        if [[ -n "${requested[$ordered_target]:-}" ]]; then
+            run_install_target "$ordered_target"
+        fi
+    done
 }
 
 command_update() {
@@ -63,10 +178,15 @@ command_update() {
 }
 
 command_list() {
+    local ordered_target
+
     [[ -d "$COMPONENT_DIR" ]] || die "Component directory not found: $COMPONENT_DIR"
-    find "$COMPONENT_DIR" -maxdepth 1 -type f -name '*.sh' -printf '%f\n' \
-        | sed 's/\.sh$//' \
-        | sort
+
+    for ordered_target in "${ORDERED_TARGETS[@]}"; do
+        if [[ "$ordered_target" == dotfiles || -f "$COMPONENT_DIR/${ordered_target}.sh" ]]; then
+            printf '%s\n' "$ordered_target"
+        fi
+    done
 }
 
 command_dotfiles() {
@@ -88,6 +208,19 @@ command_dotfiles() {
     log "Source: $DOTFILES_SOURCE"
     log "Target: $DOTFILES_TARGET"
     rsync -av "$DOTFILES_SOURCE/" "$DOTFILES_TARGET/"
+
+    if [[ "${EUID}" -eq 0 ]]; then
+        local target_user target_group source_item target_item
+        target_user="$(dotfiles_user)"
+        target_group="$(id -gn "$target_user")"
+
+        for source_item in "$DOTFILES_SOURCE"/* "$DOTFILES_SOURCE"/.[!.]* "$DOTFILES_SOURCE"/..?*; do
+            [[ -e "$source_item" ]] || continue
+            target_item="$DOTFILES_TARGET/$(basename "$source_item")"
+            [[ -e "$target_item" ]] || continue
+            chown -R "$target_user:$target_group" "$target_item"
+        done
+    fi
 }
 
 command_doctor() {

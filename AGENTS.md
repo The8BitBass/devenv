@@ -9,7 +9,7 @@
 - Windows bootstrap is admin PowerShell: `windows/bootstrap.ps1`. README invokes it remotely with `Invoke-RestMethod` and it clones/updates to machine `DEVENV_ROOT`, sets XDG-style machine env vars, configures GitHub SSH URL rewriting, then runs `windows/setup-core.ps1` unless `-SkipLocalSetup` is passed.
 - Windows local command shim is `windows/bin/devenv.ps1`: `devenv install <component...>`, `devenv update`, `devenv list`, `devenv lista`, and `devenv dotfiles`.
 - Arch WSL bootstrap is `wsl/arch/bootstrap.sh`; it must run as root inside WSL and intentionally clones a separate Linux repo at `DEVENV_CLONE_DIR` (default `/home/$DEVENV_USER/dev/devenv`) instead of reusing the Windows checkout.
-- WSL command shim is `wsl/arch/bin/devenv`: `devenv install <component>`, `devenv update`, `devenv list`, `devenv dotfiles`, and `devenv doctor`.
+- WSL command shim is `wsl/arch/bin/devenv`: `devenv install <target...>`, `devenv update`, `devenv list`, `devenv dotfiles`, and `devenv doctor`; `devenv install lite` expands to `base`, `bin`, `zsh`, `neovim`, `dotfiles` in WSL-defined order.
 
 ## Component State And Ordering
 - Windows component ordering and presets live in `windows/common/devenv.state.psm1`; do not infer order from filenames.

@@ -1,0 +1,51 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "autoupdate": true,
+    "permission": {
+        "*": "ask",
+        "read": {
+            "*": "ask",
+            ".git/**": "deny",
+            "**/.env": "deny",
+            "**/.env.*": "deny",
+            "**/*secret*": "deny",
+            "**/*secrets*/**": "deny",
+            "**/private/**": "deny"
+        },
+        "edit": {
+            "*": "ask",
+            ".git/**": "deny",
+            "**/.env": "deny",
+            "**/.env.*": "deny",
+            "**/*secret*": "deny",
+            "**/*secrets*/**": "deny",
+            "**/private/**": "deny"
+        },
+        "bash": {
+            "*": "ask",
+            "git status*": "allow",
+            "git diff*": "allow",
+            "git log*": "allow",
+            "git commit*": "deny",
+            "git push*": "deny",
+            "git reset*": "ask",
+            "git clean*": "deny",
+            "rm *": "deny",
+            "rm -rf *": "deny",
+            "npm test*": "ask",
+            "npm run test*": "ask",
+            "npm run lint*": "ask",
+            "npm run build*": "ask",
+            "pnpm test*": "ask",
+            "pnpm lint*": "ask",
+            "pnpm build*": "ask",
+            "python -m pytest*": "ask",
+            "pytest*": "ask"
+        },
+        "external_directory": {
+            "*": "ask"
+        },
+        "webfetch": "ask",
+        "websearch": "ask"
+    }
+}

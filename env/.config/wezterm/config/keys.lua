@@ -18,6 +18,13 @@ function module.apply_to_config(config)
             action = act.ActivateCommandPalette,
         },
         {
+            key = "t",
+            mods = "LEADER",
+            action = act.ShowLauncherArgs({
+                flags = "FUZZY|LAUNCH_MENU_ITEMS",
+            }),
+        },
+        {
             key = "R",
             mods = "CTRL|SHIFT",
             action = act.ReloadConfiguration,

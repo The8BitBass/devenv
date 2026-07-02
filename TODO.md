@@ -3,7 +3,7 @@
 | Status | Priority | Item | Plan | Notes |
 | --- | --- | --- | --- | --- |
 | Done | High | OpenCode dotfiles | Add `env/.config/opencode/opencode.json` with the provided permissions, `autoupdate`, schema, plus initial review and plan workflows. | Validated with `opencode debug config` and `opencode debug agent`. |
-| Pending | High | Windows WezTerm shell tabs | Add launcher-only entries for PowerShell 7, cmd, and Git Bash. | Default PowerShell should be `pwsh.exe`. |
+| Done | High | Windows WezTerm shell tabs | Add launcher-only entries for PowerShell 7, cmd, and Git Bash, plus `LEADER+t` to show launch menu items. | Validated Lua parsing with Neovim. |
 | Pending | Medium | Backgrounds git repo | Add component-managed clone/update flow under XDG data, likely `XDG_DATA_HOME/devenv/backgrounds`. | Repo URL is intentionally TBD. |
 | Pending | Medium | WezTerm repo backgrounds | Add `.devenv/project.json` project metadata lookup and map project + OS context to background image. | Uses Windows/WSL context from existing repo picker. |
 | Pending | Medium | MonoGame Windows component | Add Windows component for templates, desktop tooling, Android mobile support, and .NET 8/9/10 where possible. | `monogame` is already ordered but missing a script. |

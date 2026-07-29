@@ -1,4 +1,5 @@
 local wezterm = require("wezterm") ---@type Wezterm
+local repo_backgrounds = require("config.repo_backgrounds")
 
 local module = {}
 
@@ -23,7 +24,10 @@ function module.register()
 
     wezterm.on(
         "update-status",
-        function(window, pane) window:set_right_status(window:active_workspace() .. " - " .. format_cwd(pane)) end
+        function(window, pane)
+            window:set_right_status(window:active_workspace() .. " - " .. format_cwd(pane))
+            repo_backgrounds.apply_to_window_for_pane(window, pane)
+        end
     )
 
     local function basename(s) return string.gsub(s, "(.*[/\\])(.*)", "%2") end

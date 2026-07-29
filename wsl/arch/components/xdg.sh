@@ -21,22 +21,26 @@ for dir in \
     ensure_dir_for_user "$dir"
 done
 
-cat > /etc/profile.d/devenv-xdg.sh <<'EOF_PROFILE'
+cat > /etc/profile.d/devenv-xdg.sh <<EOF_PROFILE
 # devenv XDG defaults. These intentionally use $HOME at shell startup time.
-: "${XDG_CONFIG_HOME:=$HOME/.config}"
-: "${XDG_DATA_HOME:=$HOME/.local/share}"
-: "${XDG_STATE_HOME:=$HOME/.local/state}"
-: "${XDG_CACHE_HOME:=$HOME/.cache}"
+: "\${XDG_CONFIG_HOME:=\$HOME/.config}"
+: "\${XDG_DATA_HOME:=\$HOME/.local/share}"
+: "\${XDG_STATE_HOME:=\$HOME/.local/state}"
+: "\${XDG_CACHE_HOME:=\$HOME/.cache}"
 export XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME XDG_CACHE_HOME
 
-# Prefer the Linux clone of the devenv repo when it exists.
-if [ -z "${DEVENV_ROOT:-}" ] && [ -d "$HOME/dev/devenv" ]; then
-    export DEVENV_ROOT="$HOME/dev/devenv"
+# Prefer the Linux clone path chosen during bootstrap/component setup.
+if [ -z "\${DEVENV_ROOT:-}" ]; then
+    if [ -d "$DEVENV_CLONE_DIR" ]; then
+        export DEVENV_ROOT="$DEVENV_CLONE_DIR"
+    elif [ -d "\$HOME/dev/devenv" ]; then
+        export DEVENV_ROOT="\$HOME/dev/devenv"
+    fi
 fi
 
-case ":$PATH:" in
-    *":$HOME/bin:"*) ;;
-    *) export PATH="$HOME/bin:$PATH" ;;
+case ":\$PATH:" in
+    *":\$HOME/bin:"*) ;;
+    *) export PATH="\$HOME/bin:\$PATH" ;;
 esac
 EOF_PROFILE
 chmod 0644 /etc/profile.d/devenv-xdg.sh

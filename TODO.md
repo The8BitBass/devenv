@@ -4,8 +4,10 @@
 | --- | --- | --- | --- | --- |
 | Done | High | OpenCode dotfiles | Add `env/.config/opencode/opencode.json` with the provided permissions, `autoupdate`, schema, plus initial review and plan workflows. | Validated with `opencode debug config` and `opencode debug agent`. |
 | Done | High | Windows WezTerm shell tabs | Add launcher-only entries for PowerShell 7, cmd, and Git Bash, plus `LEADER+t` to show launch menu items. | Validated Lua parsing with Neovim. |
-| Pending | Medium | Backgrounds git repo | Add component-managed clone/update flow under XDG data, likely `XDG_DATA_HOME/devenv/backgrounds`. | Repo URL is intentionally TBD. |
-| Pending | Medium | WezTerm repo backgrounds | Add `.devenv/project.json` project metadata lookup and map project + OS context to background image. | Uses Windows/WSL context from existing repo picker. |
+| Done | High | WSL `DEVENV_ROOT` environment | Ensure WSL profile setup exports the configured Linux devenv clone path. | Uses `DEVENV_CLONE_DIR` when available, with `$HOME/dev/devenv` fallback. |
+| Deferred | Medium | Backgrounds git repo | Manage wallpapers outside this repo for now. | WezTerm should assume `XDG_DATA_HOME/devenv/wallpapers` may exist. |
+| Done | Medium | WezTerm repo backgrounds | Add Git repo-root `.devenv/project.json` lookup from active pane CWD and map project + OS context to background image. | Mapping lives in `XDG_DATA_HOME/devenv/wallpapers/projects.json`; nested `.devenv` folders are ignored, Linux is supported, default images use env-derived paths, and per-image HSB is supported. |
+| Done | Medium | Lightweight docs | Add docs for bootstrap differences, defaults, dotfiles, WezTerm backgrounds, and AI documentation expectations. | Future implementation final answers must include a `Documentation:` line. |
 | Pending | Medium | MonoGame Windows component | Add Windows component for templates, desktop tooling, Android mobile support, and .NET 8/9/10 where possible. | `monogame` is already ordered but missing a script. |
 | Pending | Medium | MonoGame WSL component | Add WSL component for Linux desktop development and shared tooling. | No Android-in-WSL setup. |
 | Pending | Low | NeoVim 0.12.x+ config | Do compatibility fixes and selected modern API updates. | NeoVim work stays last. |

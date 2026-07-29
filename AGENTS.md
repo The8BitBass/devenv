@@ -26,3 +26,8 @@
 ## Verification
 - Shell syntax check: `bash -n wsl/arch/bootstrap.sh wsl/arch/lib/common.sh wsl/arch/components/*.sh wsl/arch/bin/devenv`.
 - PowerShell syntax/import smoke check, when `pwsh` is available: `pwsh -NoProfile -Command "Get-ChildItem windows -Recurse -Include *.ps1,*.psm1 | ForEach-Object { $null = [scriptblock]::Create((Get-Content -Raw -LiteralPath $_.FullName)) }"`.
+
+## Documentation
+- Lightweight docs live under `docs/`.
+- When changing behavior, commands, env vars, defaults, optional setup, or file contracts, review whether docs need updates.
+- Every implementation final answer must include a `Documentation:` line saying which docs changed, why docs were not needed, or what documentation remains TODO.

@@ -21,6 +21,7 @@
 - WSL `.NET` uses Arch packages `dotnet-sdk` and `aspnet-runtime`.
 - Windows WezTerm installs `wez.wezterm.nightly`.
 - Windows Ollama installs winget package `Ollama.Ollama`.
+- Windows Ollama stores models in `XDG_DATA_HOME\.ollama\models` when `XDG_DATA_HOME` is set.
 - WSL Ollama installs Arch package `ollama` and starts `ollama.service` when systemd is running.
 - Ollama components do not pull models automatically.
 

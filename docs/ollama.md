@@ -9,8 +9,10 @@
 ## Windows Behavior
 
 - Installs or updates `Ollama.Ollama` with winget.
+- If `XDG_DATA_HOME` is set, creates `XDG_DATA_HOME\.ollama\models` and sets machine `OLLAMA_MODELS` to that path.
 - Does not pull any models automatically.
 - If `ollama.exe` is not immediately on `PATH`, restart the terminal after installation.
+- Restart any running Ollama process after changing `OLLAMA_MODELS`.
 
 ## WSL Behavior
 

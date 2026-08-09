@@ -25,6 +25,7 @@ ORDERED_TARGETS=(
     neovim
     dotfiles
     dotnet
+    ollama
     opencode
     workspaces
 )

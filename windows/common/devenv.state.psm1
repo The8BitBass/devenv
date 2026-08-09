@@ -62,6 +62,7 @@ function Get-OrderedComponentList {
         "dotfiles",
         "fzf",
         "dotnet",
+        "ollama",
         "powershell-profile",
         "gimp",
         "inkscape",

@@ -20,6 +20,9 @@
 - Windows `.NET` currently installs SDKs `9`, `8`, `7`, and `6`.
 - WSL `.NET` uses Arch packages `dotnet-sdk` and `aspnet-runtime`.
 - Windows WezTerm installs `wez.wezterm.nightly`.
+- Windows Ollama installs winget package `Ollama.Ollama`.
+- WSL Ollama installs Arch package `ollama` and starts `ollama.service` when systemd is running.
+- Ollama components do not pull models automatically.
 
 ## Assumptions
 

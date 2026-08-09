@@ -9,6 +9,7 @@ Import-Module (Join-Path $PSScriptRoot "..\common\devenv.winget.psm1") -Force
 
 Write-Step "Ensuring DotNet"
 
+Set-WingetPackage -Id Microsoft.DotNet.SDK.10
 Set-WingetPackage -Id Microsoft.DotNet.SDK.9
 Set-WingetPackage -Id Microsoft.DotNet.SDK.8
 Set-WingetPackage -Id Microsoft.DotNet.SDK.7

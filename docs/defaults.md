@@ -17,6 +17,8 @@
 - Windows `lite`: `neovim`, `fonts`, `wezterm`, `dotfiles`, `base`.
 - Windows `sapps`: `gimp`, `inkscape`.
 - WSL `lite`: `base`, `bin`, `zsh`, `neovim`, `dotfiles`.
+- Windows `neovim` installs Tree-sitter CLI from WinGet package `tree-sitter.tree-sitter-cli`.
+- WSL `neovim` installs Tree-sitter CLI from Arch package `tree-sitter-cli` via `pacman`.
 - Windows `.NET` currently installs SDKs `9`, `8`, `7`, and `6`.
 - WSL `.NET` uses Arch packages `dotnet-sdk` and `aspnet-runtime`.
 - Windows WezTerm installs `wez.wezterm.nightly`.
